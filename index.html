@@ -322,6 +322,21 @@ h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112p
   .history-grid{grid-template-columns:1fr}
 }
 
+
+@media(max-width:800px){
+  .nav{position:relative}
+  .burger-btn{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+  }
+  .burger-btn.active{transform:translate(-50%,-50%)}
+  .burger-btn.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .burger-btn.active span:nth-child(2){opacity:0}
+  .burger-btn.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+}
+
 </style>
 </head>
 <body>
@@ -451,7 +466,7 @@ h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112p
   <div class="section-head">
     <div class="kicker">YOUR ORDERS</div>
     <h2>Order History</h2>
-    <p>View your recently placed AAN orders and their details on this device.</p>
+    <p>View your recently placed AAN orders. Orders can also be stored centrally in your Google Sheet.</p>
   </div>
   <div class="history-list" id="historyList">
     <div class="history-empty">
@@ -463,6 +478,14 @@ h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112p
 
 <footer>© 2026 AAN. All rights reserved.</footer>
 <script>
+
+/* =========================
+   GOOGLE SHEETS ORDER BACKEND
+   Replace the empty string with your deployed Google Apps Script /exec URL.
+   Example: https://script.google.com/macros/s/XXXXXXXX/exec
+   ========================= */
+const AAN_ORDERS_ENDPOINT = '';
+
 let heroIndex=0;
 function showHero(index){
   const slides=document.querySelectorAll('.hero-slide');
@@ -559,7 +582,77 @@ function saveOrderHistory(order){
   const history = getOrderHistory();
   history.unshift(order);
   localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(history.slice(0,25)));
+  submitOrderToGoogleSheet(order);
 }
+
+function submitOrderToGoogleSheet(order){
+  if(!AAN_ORDERS_ENDPOINT) return;
+
+  // Use a normal HTML form POST so GitHub Pages does not need CORS permission.
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = AAN_ORDERS_ENDPOINT;
+  form.target = 'aanOrderSubmitFrame';
+  form.style.display = 'none';
+
+  const data = {
+    action:'createOrder',
+    orderId:order.orderId,
+    date:order.date,
+    status:order.status,
+    product:order.productName,
+    size:order.size,
+    quantity:order.quantity,
+    total:order.total,
+    name:order.name,
+    phone:order.phone,
+    email:order.email,
+    address:order.address
+  };
+
+  Object.entries(data).forEach(([key,value])=>{
+    const input=document.createElement('input');
+    input.type='hidden';
+    input.name=key;
+    input.value=value ?? '';
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+  setTimeout(()=>form.remove(),1500);
+}
+
+function loadCentralOrderHistory(){
+  if(!AAN_ORDERS_ENDPOINT) return;
+  const callbackName='aanHistoryCallback_'+Date.now();
+  window[callbackName]=function(rows){
+    try{
+      if(Array.isArray(rows) && rows.length){
+        const local=getOrderHistory();
+        const merged=[...rows,...local];
+        const unique=[];
+        const seen=new Set();
+        merged.forEach(o=>{
+          if(o && o.orderId && !seen.has(o.orderId)){
+            seen.add(o.orderId);
+            unique.push(o);
+          }
+        });
+        localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(unique.slice(0,50)));
+        renderOrderHistory();
+      }
+    }finally{
+      delete window[callbackName];
+      script.remove();
+    }
+  };
+  const script=document.createElement('script');
+  script.src=AAN_ORDERS_ENDPOINT+'?action=history&callback='+encodeURIComponent(callbackName);
+  script.onerror=()=>{ delete window[callbackName]; script.remove(); };
+  document.body.appendChild(script);
+}
+
 
 function renderOrderHistory(){
   const list = document.getElementById('historyList');
@@ -728,5 +821,6 @@ function syncMobileCart(){
   </div>
 </div>
 
+<iframe name="aanOrderSubmitFrame" id="aanOrderSubmitFrame" style="display:none" title="Order submission"></iframe>
 </body>
 </html>
