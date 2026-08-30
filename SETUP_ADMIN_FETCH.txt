@@ -1,0 +1,27 @@
+AAN ADMIN FETCH FIX
+=====================
+
+The previous admin fetch problem was caused by a mismatch:
+- admin.html requested action=adminHistory
+- the Apps Script backend did not implement adminHistory.
+
+This package fixes that and also implements customerHistory.
+
+IMPORTANT:
+1. Open Google Apps Script and replace Code.gs with GoogleAppsScript_Code.gs from this package.
+2. Save.
+3. Deploy > Manage deployments.
+4. Edit the Web app deployment and create a NEW VERSION / deploy it.
+5. Execute as: Me.
+6. Who has access: Anyone.
+7. Copy the new /exec URL.
+8. Put the same URL into BOTH:
+   - index.html:
+     const AAN_ORDERS_ENDPOINT = 'YOUR_EXEC_URL';
+   - admin.html:
+     const AAN_ORDERS_ENDPOINT = 'YOUR_EXEC_URL';
+
+Admin password:
+AAN@2026
+
+Then push index.html, admin.html and GoogleAppsScript_Code.gs to GitHub.

@@ -1,18 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AAN Admin — Order History</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AAN — Admin Orders</title>
 <style>
-:root{--ink:#18130f;--cream:#f8f4ec;--gold:#b58a3a;--muted:#71695f;--line:#e6ded1}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Montserrat,Arial,sans-serif}.wrap{max-width:1180px;margin:auto;padding:35px 20px}.brand{font-family:"Cormorant Garamond",serif;font-size:52px;text-align:center}.sub{text-align:center;color:var(--muted);margin-bottom:35px}.card{background:#fff;border:1px solid var(--line);padding:25px;margin-bottom:20px}.login{max-width:480px;margin:40px auto}.input{width:100%;padding:14px;border:1px solid #d8d0c5;margin-bottom:12px}.btn{border:0;background:var(--ink);color:#fff;padding:14px 22px;border-radius:999px;cursor:pointer;font-weight:700;width:100%}.msg{text-align:center;color:#b00020;font-size:13px;margin-top:12px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}.smallbtn{border:1px solid var(--ink);background:transparent;padding:9px 14px;border-radius:999px;cursor:pointer}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1000px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);font-size:12px;vertical-align:top}th{font-size:10px;text-transform:uppercase;letter-spacing:1px}#dashboard{display:none}.count{color:var(--muted);font-size:13px}
-</style></head>
-<body><div class="wrap"><div class="brand">AAN</div><div class="sub">Admin Order Management</div>
-<div id="login" class="card login"><h2>Admin Login</h2><input id="password" class="input" type="password" placeholder="Admin password" autocomplete="current-password"><button class="btn" onclick="login()">View All Orders</button><div id="msg" class="msg"></div></div>
-<div id="dashboard" class="card"><div class="toolbar"><div><h2>All Orders</h2><div id="count" class="count"></div></div><button class="smallbtn" onclick="loadOrders()">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Order</th><th>Date</th><th>Product</th><th>Qty</th><th>Total</th><th>Customer</th><th>Phone</th><th>Email</th><th>Address</th><th>Status</th></tr></thead><tbody id="tbody"></tbody></table></div></div>
-</div><script>
-const AAN_ORDERS_ENDPOINT='';let adminPassword='';
-function login(){adminPassword=document.getElementById('password').value;if(!adminPassword){document.getElementById('msg').textContent='Enter admin password.';return}loadOrders()}
-function loadOrders(){if(!AAN_ORDERS_ENDPOINT){document.getElementById('msg').textContent='Add the Google Apps Script /exec URL to AAN_ORDERS_ENDPOINT in admin.html.';return}const cb='aanAdmin_'+Date.now();window[cb]=function(res){delete window[cb];script.remove();if(!res||!res.ok){document.getElementById('msg').textContent='Unauthorized or unable to load orders.';return}document.getElementById('login').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('count').textContent=res.orders.length+' order(s)';document.getElementById('tbody').innerHTML=res.orders.map(o=>`<tr><td>${esc(o.orderId)}</td><td>${esc(o.date)}</td><td>${esc(o.productName)}<br>${esc(o.size)}</td><td>${esc(o.quantity)}</td><td>₹${Number(o.total).toLocaleString('en-IN')}</td><td>${esc(o.name)}</td><td>${esc(o.phone)}</td><td>${esc(o.email)}</td><td>${esc(o.address)}</td><td>${esc(o.status)}</td></tr>`).join('')};const script=document.createElement('script');script.src=AAN_ORDERS_ENDPOINT+'?action=adminHistory&password='+encodeURIComponent(adminPassword)+'&callback='+cb;script.onerror=()=>{delete window[cb];script.remove();document.getElementById('msg').textContent='Unable to connect to order database.'};document.body.appendChild(script)}
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
-</script></body></html>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f8f4ec;color:#18130f}
+main{max-width:1200px;margin:auto;padding:30px 16px}.card{background:#fff;border:1px solid #e5dccf;padding:22px;margin-bottom:18px}
+h1{font-family:Georgia,serif}input,button{padding:12px;font:inherit}button{cursor:pointer}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row input{flex:1;min-width:220px}
+.status{margin-top:12px;font-size:13px}.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:10px;border-bottom:1px solid #e5dccf;text-align:left;font-size:12px;vertical-align:top}
+.admin-btn{background:#18130f;color:#fff;border:0}
+</style>
+</head>
+<body>
+<main>
+  <h1>AAN Admin Orders</h1>
+  <div class="card">
+    <div class="row">
+      <input id="password" type="password" placeholder="Admin password">
+      <button class="admin-btn" onclick="loadOrders()">View All Orders</button>
+    </div>
+    <div class="status" id="status">Enter the admin password and click View All Orders.</div>
+  </div>
+
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Order ID</th><th>Date</th><th>Status</th><th>Product</th><th>Size</th>
+          <th>Qty</th><th>Total</th><th>Name</th><th>Phone</th><th>Email</th><th>Address</th>
+        </tr></thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script>
+const AAN_ORDERS_ENDPOINT = '';
+const AAN_ADMIN_PASSWORD = 'AAN@2026';
+
+function esc(v){
+  return String(v ?? '').replace(/[&<>"']/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  }[c]));
+}
+
+function loadOrders(){
+  const pass=document.getElementById('password').value;
+  const status=document.getElementById('status');
+
+  if(!pass){status.textContent='Please enter the admin password.';return;}
+  if(pass!==AAN_ADMIN_PASSWORD){status.textContent='Incorrect admin password.';return;}
+  if(!AAN_ORDERS_ENDPOINT){
+    status.textContent='Google Apps Script /exec URL is not configured in admin.html.';
+    return;
+  }
+
+  status.textContent='Loading orders…';
+  const cb='aanAdmin_'+Date.now();
+
+  window[cb]=function(result){
+    try{
+      if(result && result.error){
+        status.textContent='Backend rejected the request.';
+        return;
+      }
+
+      const rows=Array.isArray(result)?result:[];
+      document.getElementById('ordersBody').innerHTML=rows.map(o=>`
+        <tr>
+          <td>${esc(o.orderId)}</td>
+          <td>${esc(o.date)}</td>
+          <td>${esc(o.status)}</td>
+          <td>${esc(o.productName)}</td>
+          <td>${esc(o.size)}</td>
+          <td>${esc(o.quantity)}</td>
+          <td>₹${Number(o.total||0).toLocaleString('en-IN')}</td>
+          <td>${esc(o.name)}</td>
+          <td>${esc(o.phone)}</td>
+          <td>${esc(o.email)}</td>
+          <td>${esc(o.address)}</td>
+        </tr>`).join('');
+
+      status.textContent=rows.length+' order(s) found.';
+    }finally{
+      delete window[cb];
+      if(script) script.remove();
+    }
+  };
+
+  const script=document.createElement('script');
+  script.src=AAN_ORDERS_ENDPOINT+
+    '?action=adminHistory&password='+encodeURIComponent(pass)+
+    '&callback='+encodeURIComponent(cb);
+  script.onerror=()=>{
+    status.textContent='Unable to fetch orders. Check the /exec URL and Apps Script deployment.';
+    delete window[cb];
+    script.remove();
+  };
+  document.body.appendChild(script);
+}
+</script>
+</body>
+</html>
