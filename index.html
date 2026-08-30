@@ -297,6 +297,31 @@ h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112p
   .burger-btn.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 }
 
+
+.history-list{max-width:900px;margin:0 auto}
+.history-empty,.history-card{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.55);
+  padding:24px;
+}
+.history-empty{text-align:center}
+.history-empty h3{font-size:28px;margin:0 0 8px}
+.history-empty p{font-size:13px;color:#766f66}
+.history-card{margin-bottom:16px}
+.history-card-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px}
+.history-card h3{margin:0;font-size:26px}
+.history-status{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;border:1px solid var(--gold2);padding:7px 9px}
+.history-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 28px}
+.history-item{font-size:12px;line-height:1.6}
+.history-item strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#766f66;margin-bottom:2px}
+.history-total{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:18px;font-weight:600}
+@media(max-width:800px){
+  .history-list{width:100%}
+  .history-card{padding:18px}
+  .history-card-head{flex-direction:column}
+  .history-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -331,6 +356,7 @@ h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112p
   <a href="#fragrance" onclick="closeMenu()">Fragrance</a>
   <a href="#story" onclick="closeMenu()">The Story</a>
   <a href="#order" onclick="closeMenu()">Order</a>
+  <a href="#history" onclick="closeMenu();showHistory()">Order History</a>
 </div>
 </header>
 
@@ -420,6 +446,21 @@ h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112p
 <p style="text-align:center;color:#888;font-size:12px">Your order details will be sent to AAN on WhatsApp.</p>
 </div></section>
 </main>
+
+<section class="section" id="history">
+  <div class="section-head">
+    <div class="kicker">YOUR ORDERS</div>
+    <h2>Order History</h2>
+    <p>View your recently placed AAN orders and their details on this device.</p>
+  </div>
+  <div class="history-list" id="historyList">
+    <div class="history-empty">
+      <h3>No orders yet</h3>
+      <p>Your confirmed orders will appear here.</p>
+    </div>
+  </div>
+</section>
+
 <footer>© 2026 AAN. All rights reserved.</footer>
 <script>
 let heroIndex=0;
@@ -503,12 +544,75 @@ function updateProduct(){
   updateTotal();
 }
 
+
+const ORDER_HISTORY_KEY = 'aan_order_history';
+
+function getOrderHistory(){
+  try{
+    return JSON.parse(localStorage.getItem(ORDER_HISTORY_KEY) || '[]');
+  }catch(e){
+    return [];
+  }
+}
+
+function saveOrderHistory(order){
+  const history = getOrderHistory();
+  history.unshift(order);
+  localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(history.slice(0,25)));
+}
+
+function renderOrderHistory(){
+  const list = document.getElementById('historyList');
+  if(!list) return;
+
+  const history = getOrderHistory();
+
+  if(!history.length){
+    list.innerHTML = '<div class="history-empty"><h3>No orders yet</h3><p>Your confirmed orders will appear here.</p></div>';
+    return;
+  }
+
+  list.innerHTML = history.map((o,i) => `
+    <article class="history-card">
+      <div class="history-card-head">
+        <div>
+          <h3>${escapeHtml(o.productName)}</h3>
+          <div style="font-size:11px;color:#766f66;margin-top:5px;">Order #${escapeHtml(o.orderId)} · ${escapeHtml(o.date)}</div>
+        </div>
+        <span class="history-status">${escapeHtml(o.status)}</span>
+      </div>
+      <div class="history-grid">
+        <div class="history-item"><strong>Size</strong>${escapeHtml(o.size)}</div>
+        <div class="history-item"><strong>Quantity</strong>${escapeHtml(String(o.quantity))}</div>
+        <div class="history-item"><strong>Customer Name</strong>${escapeHtml(o.name)}</div>
+        <div class="history-item"><strong>Phone</strong>${escapeHtml(o.phone)}</div>
+        <div class="history-item"><strong>Email</strong>${escapeHtml(o.email || 'Not provided')}</div>
+        <div class="history-item"><strong>Delivery Address</strong>${escapeHtml(o.address)}</div>
+      </div>
+      <div class="history-total">Total: ₹${Number(o.total).toLocaleString('en-IN')}</div>
+    </article>
+  `).join('');
+}
+
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  }[ch]));
+}
+
+function showHistory(){
+  setTimeout(renderOrderHistory, 0);
+}
+
 function placeOrder(){
   const n = document.getElementById('name').value.trim();
   const p = document.getElementById('phone').value.trim();
   const e = document.getElementById('email').value.trim();
   const a = document.getElementById('address').value.trim();
   const q = document.getElementById('qty').value;
+  const productEl = document.getElementById('product');
+  const selected = productEl ? productEl.options[productEl.selectedIndex] : null;
+  const productName = selected ? selected.text : 'AAN Signature Eau De Parfum — 100ml · ₹1,999';
   const total = price * Number(q);
 
   if(!n || !p || !a){
@@ -516,11 +620,29 @@ function placeOrder(){
     return;
   }
 
+  const order = {
+    orderId: 'AAN-' + Date.now().toString().slice(-8),
+    date: new Date().toLocaleString('en-IN'),
+    status: 'Order Placed',
+    productName,
+    size: '100ml',
+    quantity: Number(q),
+    total,
+    name: n,
+    phone: p,
+    email: e,
+    address: a
+  };
+
+  saveOrderHistory(order);
+  renderOrderHistory();
+
   const msg =
     'AAN NEW ORDER\n\n' +
-    'Product: AAN Signature Eau de Parfum\n' +
-    'Size: 100ml\n' +
-    'Quantity: ' + q + '\n' +
+    'Order ID: ' + order.orderId + '\n' +
+    'Product: ' + productName + '\n' +
+    'Size: ' + order.size + '\n' +
+    'Quantity: ' + order.quantity + '\n' +
     'Total: ₹' + total.toLocaleString('en-IN') + '\n\n' +
     'Customer Name: ' + n + '\n' +
     'Customer Phone: ' + p + '\n' +
@@ -531,6 +653,8 @@ function placeOrder(){
   const whatsappUrl = 'https://wa.me/' + whatsappNumber + '?text=' + encodeURIComponent(msg);
 
   window.open(whatsappUrl, '_blank');
+
+  document.getElementById('history')?.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 document.addEventListener('keydown',e=>{
