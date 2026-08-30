@@ -274,6 +274,12 @@ h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112p
   .mobile-menu button{border-bottom:0}
 }
 
+
+.order .field select{appearance:auto;cursor:pointer}
+@media(max-width:800px){
+  .order .field select{width:100%;min-height:48px;padding:13px;font-size:16px}
+}
+
 </style>
 </head>
 <body>
@@ -384,7 +390,13 @@ h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112p
 <div class="field"><label>Full Name</label><input id="name" required placeholder="Your name"></div>
 <div class="field"><label>Phone</label><input id="phone" required placeholder="+91"></div>
 <div class="field"><label>Email</label><input id="email" type="email" placeholder="you@example.com"></div>
-<div class="field"><label>Quantity</label><select id="qty" onchange="updateTotal()"><option value="1">1 Bottle</option><option value="2">2 Bottles</option><option value="3">3 Bottles</option><option value="4">4 Bottles</option></select></div>
+<div class="field">
+  <label>Perfume</label>
+  <select id="product" onchange="updateProduct()">
+    <option value="signature" data-price="1999">AAN Signature Eau De Parfum — 100ml · ₹1,999</option>
+  </select>
+</div>
+<div class="field"><label>Quantity</label><select id="qty" onchange="updateTotal()"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
 <div class="field"><label>Delivery Address</label><input id="address" required placeholder="Complete delivery address"></div>
 <div class="total"><span>Total</span><span id="total">₹1,999</span></div>
 <button class="btn btn-gold" style="width:100%" onclick="placeOrder()">Confirm Order</button>
@@ -465,6 +477,13 @@ function updateTotal(){
   document.getElementById('total').textContent='₹'+(price*q).toLocaleString('en-IN');
   count=q;
   renderCart();
+}
+
+function updateProduct(){
+  const product = document.getElementById('product');
+  const selected = product.options[product.selectedIndex];
+  price = Number(selected.dataset.price || 1999);
+  updateTotal();
 }
 
 function placeOrder(){
