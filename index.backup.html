@@ -337,13 +337,6 @@ h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112p
   .burger-btn.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 }
 
-
-.history-login{max-width:900px;margin:0 auto 28px;padding:20px;border:1px solid var(--line);background:white}
-.history-login-fields{display:grid;grid-template-columns:1fr 1fr auto;gap:10px}
-.history-login input{width:100%;padding:14px;border:1px solid #d8d0c5;background:#fff}
-.history-message{font-size:12px;color:var(--muted);margin:10px 0 0}
-@media(max-width:800px){.history-login-fields{grid-template-columns:1fr}.history-login .btn{width:100%}}
-
 </style>
 </head>
 <body>
@@ -473,18 +466,13 @@ h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112p
   <div class="section-head">
     <div class="kicker">YOUR ORDERS</div>
     <h2>Order History</h2>
-    <p>Enter the same phone number and email used while ordering to view your orders.</p>
-  </div>
-  <div class="history-login">
-    <div class="history-login-fields">
-      <input id="historyPhone" type="tel" placeholder="Phone number">
-      <input id="historyEmail" type="email" placeholder="Email address">
-      <button class="btn btn-gold" type="button" onclick="loadCustomerHistory()">View My Orders</button>
-    </div>
-    <p id="historyMessage" class="history-message"></p>
+    <p>View your recently placed AAN orders. Orders can also be stored centrally in your Google Sheet.</p>
   </div>
   <div class="history-list" id="historyList">
-    <div class="history-empty"><h3>Your orders will appear here</h3><p>Place an order, then use your phone and email to view your order history.</p></div>
+    <div class="history-empty">
+      <h3>No orders yet</h3>
+      <p>Your confirmed orders will appear here.</p>
+    </div>
   </div>
 </section>
 
@@ -635,27 +623,36 @@ function submitOrderToGoogleSheet(order){
   setTimeout(()=>form.remove(),1500);
 }
 
-function loadCustomerHistory(){
-  const phone=(document.getElementById('historyPhone').value||'').trim();
-  const email=(document.getElementById('historyEmail').value||'').trim().toLowerCase();
-  const msg=document.getElementById('historyMessage');
-  if(!phone || !email){ msg.textContent='Please enter the same phone number and email used for the order.'; return; }
-  if(!AAN_ORDERS_ENDPOINT){ msg.textContent='Order history is not connected yet. Add the Google Apps Script /exec URL in the code.'; return; }
-  msg.textContent='Loading your orders…';
-  const callbackName='aanCustomerHistory_'+Date.now();
+function loadCentralOrderHistory(){
+  if(!AAN_ORDERS_ENDPOINT) return;
+  const callbackName='aanHistoryCallback_'+Date.now();
   window[callbackName]=function(rows){
     try{
-      const history=Array.isArray(rows)?rows:[];
-      localStorage.setItem(ORDER_HISTORY_KEY,JSON.stringify(history.slice(0,50)));
-      renderOrderHistory();
-      msg.textContent=history.length ? (history.length+' order(s) found.') : 'No orders found for these details.';
-    }finally{delete window[callbackName];script.remove();}
+      if(Array.isArray(rows) && rows.length){
+        const local=getOrderHistory();
+        const merged=[...rows,...local];
+        const unique=[];
+        const seen=new Set();
+        merged.forEach(o=>{
+          if(o && o.orderId && !seen.has(o.orderId)){
+            seen.add(o.orderId);
+            unique.push(o);
+          }
+        });
+        localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(unique.slice(0,50)));
+        renderOrderHistory();
+      }
+    }finally{
+      delete window[callbackName];
+      script.remove();
+    }
   };
   const script=document.createElement('script');
-  script.src=AAN_ORDERS_ENDPOINT+'?action=customerHistory&phone='+encodeURIComponent(phone)+'&email='+encodeURIComponent(email)+'&callback='+encodeURIComponent(callbackName);
-  script.onerror=()=>{delete window[callbackName];script.remove();msg.textContent='Unable to load order history. Please try again.';};
+  script.src=AAN_ORDERS_ENDPOINT+'?action=history&callback='+encodeURIComponent(callbackName);
+  script.onerror=()=>{ delete window[callbackName]; script.remove(); };
   document.body.appendChild(script);
 }
+
 
 function renderOrderHistory(){
   const list = document.getElementById('historyList');
@@ -731,10 +728,7 @@ function placeOrder(){
   };
 
   saveOrderHistory(order);
-  document.getElementById('historyPhone').value=p;
-  document.getElementById('historyEmail').value=e;
   renderOrderHistory();
-  if(AAN_ORDERS_ENDPOINT) loadCustomerHistory();
 
   const msg =
     'AAN NEW ORDER\n\n' +

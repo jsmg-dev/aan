@@ -1,39 +1,25 @@
-AAN — GOOGLE SHEETS ORDER STORAGE SETUP
+AAN GOOGLE SHEETS + CUSTOMER HISTORY + ADMIN SETUP
 
-This version is compatible with GitHub Pages.
+1. Create a Google Sheet in Google Drive.
+2. Extensions -> Apps Script.
+3. Replace Code.gs with GoogleAppsScript_Code.gs from this package.
+4. Change ADMIN_PASSWORD in Code.gs to a strong private password.
+5. Deploy -> New deployment -> Web app.
+   Execute as: Me
+   Who has access: Anyone
+6. Copy the deployed /exec URL.
+7. Open index.html and set:
+   const AAN_ORDERS_ENDPOINT = 'YOUR_WEB_APP_EXEC_URL';
+8. Open admin.html and set the same URL in AAN_ORDERS_ENDPOINT.
+9. Push index.html and admin.html to GitHub Pages.
 
-WHAT IT DOES
-- Customer confirms an order.
-- The order is immediately shown in Order History.
-- The order is submitted to a Google Sheet.
-- WhatsApp order sharing continues as before.
-- When Order History opens, the site can load the latest 50 central orders from Google Sheets.
-- Local browser history is retained as a fallback.
+CUSTOMER HISTORY:
+- Customer enters the SAME phone + email used at checkout.
+- Google Sheets returns only matching orders.
+- Orders are also cached locally for faster display.
+- This is identity matching, not OTP authentication. For high-security customer accounts, add OTP/login.
 
-IMPORTANT PRIVACY NOTE
-The central history endpoint in this simple version returns recent orders to the website. Because it is designed as a public web app for a static GitHub Pages site, do not store sensitive personal information beyond what you actually need for fulfilment.
-
-SETUP
-1. Create a new Google Sheet in Google Drive.
-2. Open Extensions -> Apps Script.
-3. Open GoogleAppsScript_Code.gs from this folder and copy all its code into Code.gs.
-4. Save.
-5. Click Deploy -> New deployment.
-6. Select "Web app".
-7. Execute as: Me.
-8. Who has access: Anyone.
-9. Deploy and authorize it.
-10. Copy the Web app URL ending in /exec.
-11. Open index.html.
-12. Find:
-      const AAN_ORDERS_ENDPOINT = '';
-13. Replace it with:
-      const AAN_ORDERS_ENDPOINT = 'YOUR_WEB_APP_EXEC_URL';
-14. Upload the updated index.html to your GitHub repository.
-
-TEST
-- Place one test order.
-- Check the Google Sheet: a new "Orders" tab should contain the order.
-- Refresh the website and open Order History.
-
-If you later want proper customer-specific history, admin-only order access, payment status, or order status updates, use a real backend/database with authentication rather than exposing a public history endpoint.
+ADMIN HISTORY:
+- admin.html shows ALL orders.
+- Admin password is checked by Google Apps Script, not stored in the website.
+- Do not put the admin password inside index.html.
