@@ -1,7 +1,16 @@
-AAN PERFUME WEBSITE — HERO CAROUSEL UPDATED
-=============================================
+AAN PERFUME WEBSITE — ORDER WHATSAPP UPDATE
 
-The first-page hero contains all five supplied AAN creatives.
-Users can manually click the left/right arrow buttons or the dots to switch images.
+Confirm Order now opens WhatsApp and sends the complete order details to:
++91 91660 10400
 
-Cart, quantity selection, order form and WhatsApp order handoff are retained.
+Details sent:
+- Product
+- Size
+- Quantity
+- Total
+- Customer name
+- Customer phone
+- Customer email
+- Delivery address
+
+Note: The customer must have WhatsApp available for the WhatsApp handoff to work.
