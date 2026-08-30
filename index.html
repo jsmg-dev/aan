@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAN — Wear Your Presence</title>
+<meta name="description" content="AAN luxury fragrance — a refined signature scent.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#18130f;--cream:#f8f4ec;--gold:#b58a3a;--muted:#71695f;--line:#e6ded1}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Montserrat,Arial,sans-serif;color:var(--ink);background:var(--cream)}
+a{text-decoration:none;color:inherit}button,input,select{font:inherit}
+.header{position:sticky;top:0;z-index:20;background:rgba(248,244,236,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;height:76px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:"Cormorant Garamond",serif;font-size:42px;letter-spacing:8px;font-weight:700}.navlinks{display:flex;gap:28px;font-size:13px;text-transform:uppercase;letter-spacing:1.5px}
+.cart{border:1px solid var(--ink);padding:10px 15px;border-radius:999px;cursor:pointer;background:transparent}
+.hero{min-height:82vh;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;max-width:1280px;margin:auto}.hero-copy{padding:70px 8vw 70px 7vw}
+.kicker{text-transform:uppercase;letter-spacing:4px;font-size:12px;color:var(--gold);font-weight:700}
+h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112px);line-height:.86;margin:18px 0}
+.hero-copy p{max-width:520px;color:var(--muted);line-height:1.8;font-size:16px}.btn{display:inline-block;border:0;cursor:pointer;border-radius:999px;padding:15px 25px;font-weight:700}
+.btn-gold{background:var(--ink);color:white}.hero-img{height:82vh;overflow:hidden}.hero-img img{width:100%;height:100%;object-fit:cover}
+.section{max-width:1180px;margin:auto;padding:90px 24px}.section-head{text-align:center;margin-bottom:45px}.section-head h2{font-size:58px;margin:8px 0}.section-head p{color:var(--muted)}
+.product{background:white;border:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;overflow:hidden}.product img{width:100%;height:600px;object-fit:cover}.product-info{padding:55px;display:flex;flex-direction:column;justify-content:center}
+.product-info h3{font-size:54px;margin:8px 0}.price{font-size:28px;font-weight:700;margin:15px 0}.notes{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.note{padding:9px 13px;border:1px solid var(--line);border-radius:999px;font-size:12px}
+.story{background:var(--ink);color:white}.story .section-head p{color:#c8c0b6}.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.gallery img{width:100%;height:420px;object-fit:cover}
+.order{background:white;border:1px solid var(--line);max-width:700px;margin:auto;padding:38px}.order h2{text-align:center;font-size:48px;margin:0 0 24px}
+.field{margin-bottom:16px}.field label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}.field input,.field select{width:100%;padding:14px;border:1px solid #d8d0c5;background:#fff}
+.total{display:flex;justify-content:space-between;font-weight:700;font-size:18px;margin:22px 0}footer{padding:45px 24px;text-align:center;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+@media(max-width:800px){.navlinks{display:none}.hero{grid-template-columns:1fr}.hero-img{height:55vh}.hero-copy{padding:65px 24px}.product{grid-template-columns:1fr}.product img{height:480px}.gallery{grid-template-columns:1fr 1fr}.gallery img{height:300px}}
+
+.cart-modal{display:none;position:fixed;inset:0;z-index:1000}
+.cart-modal.open{display:block}
+.cart-overlay{position:absolute;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(5px)}
+.cart-panel{position:absolute;right:0;top:0;height:100%;width:min(520px,100%);background:var(--cream);padding:42px 32px;overflow:auto;box-shadow:-20px 0 60px rgba(0,0,0,.2)}
+.cart-close{position:absolute;right:22px;top:16px;border:0;background:transparent;font-size:34px;cursor:pointer;color:var(--ink)}
+.cart-panel h2{font-family:"Cormorant Garamond",serif;font-size:52px;margin:8px 0 28px}
+.cart-empty{text-align:center;padding:50px 10px}
+.empty-icon{font-size:48px}.cart-empty h3{font-size:32px;margin:12px 0}.cart-empty p{color:var(--muted);line-height:1.7;margin-bottom:24px}
+.cart-product{display:grid;grid-template-columns:145px 1fr;gap:20px;background:white;border:1px solid var(--line);padding:16px;margin-bottom:22px}
+.cart-product img{width:145px;height:175px;object-fit:cover}.cart-product h3{font-size:34px;margin:4px 0}.cart-desc{font-size:13px;color:var(--muted);line-height:1.5}
+.cart-row{display:flex;align-items:center;justify-content:space-between;margin-top:15px;font-size:13px}
+.qty-control{display:flex;align-items:center;gap:14px;border:1px solid var(--line);padding:5px 8px}
+.qty-control button{border:0;background:transparent;font-size:20px;cursor:pointer;width:24px}
+.cart-total{display:flex;justify-content:space-between;font-size:21px;font-weight:700;border-top:1px solid var(--line);padding:20px 0;margin-bottom:10px}
+@media(max-width:520px){.cart-panel{padding:38px 20px}.cart-product{grid-template-columns:105px 1fr}.cart-product img{width:105px;height:145px}}
+
+
+.logo{display:flex;align-items:center;justify-content:center;width:58px;height:58px;overflow:hidden;border-radius:50%;letter-spacing:0}
+.logo img{width:58px;height:58px;border-radius:50%;object-fit:cover;display:block}
+
+
+.story-feature{max-width:900px;margin:0 auto;border:1px solid rgba(215,182,107,.35);overflow:hidden;background:#111}
+.story-feature img{width:100%;display:block;max-height:1000px;object-fit:cover}
+.story-copy{max-width:1000px;margin:35px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.story-copy>div{border-top:1px solid rgba(215,182,107,.35);padding-top:18px}
+.story-number{color:var(--gold2);font-size:11px;letter-spacing:3px}
+.story-copy h3{font-size:32px;margin:8px 0}
+.story-copy p{color:#c8c0b6;line-height:1.7;font-size:13px}
+@media(max-width:800px){.story-copy{grid-template-columns:1fr}.logo,.logo img{width:52px;height:52px}}
+
+
+.hero-slider{position:relative;background:#eee;overflow:hidden}
+.hero-slides{position:absolute;inset:0}
+.hero-slide{position:absolute!important;inset:0;width:100%!important;height:100%!important;object-fit:cover;opacity:0;visibility:hidden;transition:opacity .45s ease;object-position:center}
+.hero-slide.active{opacity:1;visibility:visible}
+.hero-slide.hero-vertical{object-fit:contain;background:#f8f4ec;padding:18px}
+.hero-arrow{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;border:1px solid rgba(255,255,255,.7);background:rgba(20,16,12,.45);color:#fff;font-size:42px;line-height:42px;cursor:pointer;z-index:4;backdrop-filter:blur(8px);transition:.2s}
+.hero-arrow:hover{background:rgba(20,16,12,.75);transform:translateY(-50%) scale(1.05)}
+.hero-prev{left:20px}.hero-next{right:20px}
+.hero-dots{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:4}
+.hero-dot{width:9px;height:9px;padding:0;border:1px solid #fff;border-radius:50%;background:rgba(255,255,255,.55);cursor:pointer}
+.hero-dot.active{background:#fff;transform:scale(1.35)}
+.hero-count{position:absolute;right:20px;bottom:22px;background:rgba(20,16,12,.48);color:#fff;padding:8px 12px;border-radius:999px;font-size:11px;letter-spacing:1px;z-index:4;backdrop-filter:blur(8px)}
+@media(max-width:800px){.hero-arrow{width:44px;height:44px;font-size:35px}.hero-prev{left:12px}.hero-next{right:12px}.hero-dots{bottom:16px}.hero-count{right:12px;bottom:14px}}
+</style>
+</head>
+<body>
+<header class="header"><nav class="nav">
+<a class="logo" href="#" aria-label="AAN Home"><img src="images/aan-logo.jpg" alt="AAN logo"></a>
+<div class="navlinks"><a href="#fragrance">Fragrance</a><a href="#story">The Story</a><a href="#order">Order</a></div>
+<button class="cart" onclick="openCart()">Cart · <span id="cartCount">0</span></button>
+</nav></header>
+
+<main>
+<section class="hero">
+<div class="hero-copy"><div class="kicker">Eau de Parfum · 100ml</div><h1>Wear<br>Your<br>Presence.</h1>
+<p>AAN is a refined fragrance built around bright citrus, calming lavender, creamy vanilla, soft blossom, sensual musk and deep cedar.</p>
+<a class="btn btn-gold" href="#order">Shop AAN — ₹1,999</a></div>
+<div class="hero-img hero-slider" aria-label="AAN fragrance gallery">
+  <div class="hero-slides">
+    <img class="hero-slide active" src="images/hero-1.jpg" alt="AAN perfume with citrus and floral notes">
+    <img class="hero-slide" src="images/hero-2.jpg" alt="AAN perfume with creamy vanilla notes">
+    <img class="hero-slide" src="images/hero-3.jpg" alt="AAN perfume in a luxury city campaign">
+    <img class="hero-slide" src="images/hero-4.jpg" alt="AAN perfume presented on a luxury tray">
+    <img class="hero-slide hero-vertical" src="images/hero-5.png" alt="AAN perfume campaign">
+  </div>
+  <button class="hero-arrow hero-prev" type="button" onclick="changeHero(-1)" aria-label="Previous image">‹</button>
+  <button class="hero-arrow hero-next" type="button" onclick="changeHero(1)" aria-label="Next image">›</button>
+  <div class="hero-dots" aria-label="Choose image">
+    <button class="hero-dot active" type="button" onclick="showHero(0)" aria-label="Image 1"></button>
+    <button class="hero-dot" type="button" onclick="showHero(1)" aria-label="Image 2"></button>
+    <button class="hero-dot" type="button" onclick="showHero(2)" aria-label="Image 3"></button>
+    <button class="hero-dot" type="button" onclick="showHero(3)" aria-label="Image 4"></button>
+    <button class="hero-dot" type="button" onclick="showHero(4)" aria-label="Image 5"></button>
+  </div>
+  <div class="hero-count"><span id="heroCurrent">1</span> / 5</div>
+</div>
+</section>
+
+<section class="section" id="fragrance"><div class="section-head"><div class="kicker">The Signature Scent</div><h2>Some Fade. Some Stay.</h2><p>AAN is blended to make an impression long after the moment.</p></div>
+<div class="product"><img src="images/aan-3.jpg" alt="AAN fragrance with ingredients"><div class="product-info">
+<div class="kicker">AAN · Eau de Parfum</div><h3>Signature</h3><p>Bright citrus opens the fragrance, softened by lavender and blossom. Vanilla adds warmth while musk and cedar create a smooth, lasting base.</p>
+<div class="notes"><span class="note">Orange · Bright & Juicy</span><span class="note">Lavender · Calming</span><span class="note">Vanilla · Warm</span><span class="note">Musk · Smooth</span><span class="note">Cedar · Woody</span></div>
+<div class="price">₹1,999 <small style="font-size:12px;color:#888">· 100ml</small></div>
+<button class="btn btn-gold" onclick="addToCart()">Add to Order</button></div></div></section>
+
+<section class="story" id="story">
+<div class="section">
+  <div class="section-head">
+    <div class="kicker">THE AAN STORY</div>
+    <h2>Some Fade. Some Stay.</h2>
+    <p>
+      AAN is more than a fragrance — it is your signature, your presence,
+      and the memory you leave behind. A sophisticated blend of bright citrus,
+      calming lavender, soft blossom, creamy vanilla, sensual musk and deep cedar.
+    </p>
+  </div>
+
+  <div class="story-feature">
+    <img src="images/aan-story.jpg" alt="AAN luxury perfume story campaign">
+  </div>
+
+  <div class="story-copy">
+    <div>
+      <span class="story-number">01</span>
+      <h3>Make an Impression.</h3>
+      <p>Fresh at first. Warm as it settles. Distinctive from the very first spray to the final dry-down.</p>
+    </div>
+    <div>
+      <span class="story-number">02</span>
+      <h3>Made to Stay.</h3>
+      <p>AAN brings together citrus, florals, vanilla, musk and cedar for a refined fragrance with character.</p>
+    </div>
+    <div>
+      <span class="story-number">03</span>
+      <h3>Wear Your Presence.</h3>
+      <p>For evenings, celebrations, special occasions — or simply the moments when you want to feel unforgettable.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="order"><div class="order"><h2>Place Your Order</h2>
+<div class="field"><label>Full Name</label><input id="name" required placeholder="Your name"></div>
+<div class="field"><label>Phone</label><input id="phone" required placeholder="+91"></div>
+<div class="field"><label>Email</label><input id="email" type="email" placeholder="you@example.com"></div>
+<div class="field"><label>Quantity</label><select id="qty" onchange="updateTotal()"><option value="1">1 Bottle</option><option value="2">2 Bottles</option><option value="3">3 Bottles</option><option value="4">4 Bottles</option></select></div>
+<div class="field"><label>Delivery Address</label><input id="address" required placeholder="Complete delivery address"></div>
+<div class="total"><span>Total</span><span id="total">₹1,999</span></div>
+<button class="btn btn-gold" style="width:100%" onclick="placeOrder()">Confirm Order</button>
+<p style="text-align:center;color:#888;font-size:12px">Payment gateway can be connected to Razorpay/UPI at the next step.</p>
+</div></section>
+</main>
+<footer>© 2026 AAN. All rights reserved.</footer>
+<script>
+let heroIndex=0;
+function showHero(index){
+  const slides=document.querySelectorAll('.hero-slide');
+  const dots=document.querySelectorAll('.hero-dot');
+  if(!slides.length)return;
+  heroIndex=(index+slides.length)%slides.length;
+  slides.forEach((s,i)=>s.classList.toggle('active',i===heroIndex));
+  dots.forEach((d,i)=>d.classList.toggle('active',i===heroIndex));
+  const current=document.getElementById('heroCurrent');
+  if(current)current.textContent=heroIndex+1;
+}
+function changeHero(step){showHero(heroIndex+step);}
+
+let count=0,price=1999;
+
+function openCart(){
+  document.getElementById('cartModal').classList.add('open');
+  document.getElementById('cartModal').setAttribute('aria-hidden','false');
+  renderCart();
+}
+
+function closeCart(){
+  document.getElementById('cartModal').classList.remove('open');
+  document.getElementById('cartModal').setAttribute('aria-hidden','true');
+}
+
+function renderCart(){
+  const hasItems=count>0;
+  document.getElementById('emptyCart').style.display=hasItems?'none':'block';
+  document.getElementById('cartDetails').style.display=hasItems?'block':'none';
+  document.getElementById('modalQty').textContent=count;
+  document.getElementById('modalTotal').textContent='₹'+(price*count).toLocaleString('en-IN');
+  document.getElementById('cartCount').textContent=count;
+}
+
+function addToCart(){
+  count++;
+  renderCart();
+  openCart();
+}
+
+function changeQty(delta){
+  count=Math.max(0,count+delta);
+  renderCart();
+  if(count===0) openCart();
+}
+
+function clearCart(){
+  count=0;
+  document.getElementById('qty').value='1';
+  updateTotal();
+  renderCart();
+}
+
+function updateTotal(){
+  let q=Number(document.getElementById('qty').value);
+  document.getElementById('total').textContent='₹'+(price*q).toLocaleString('en-IN');
+  count=q;
+  renderCart();
+}
+
+function placeOrder(){
+  let n=document.getElementById('name').value.trim(),
+      p=document.getElementById('phone').value.trim(),
+      a=document.getElementById('address').value.trim(),
+      q=document.getElementById('qty').value;
+
+  if(!n||!p||!a){
+    alert('Please fill in your name, phone and delivery address.');
+    return;
+  }
+
+  let msg='AAN Order\n\nName: '+n+'\nPhone: '+p+'\nQuantity: '+q+'\nAddress: '+a;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeCart();
+});
+</script>
+
+<div class="cart-modal" id="cartModal" aria-hidden="true">
+  <div class="cart-overlay" onclick="closeCart()"></div>
+  <div class="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+    <button class="cart-close" onclick="closeCart()" aria-label="Close">×</button>
+    <div class="kicker">YOUR SHOPPING BAG</div>
+    <h2 id="cartTitle">Your Cart</h2>
+
+    <div id="emptyCart" class="cart-empty">
+      <div class="empty-icon">🛍️</div>
+      <h3>Your cart is empty</h3>
+      <p>Add AAN Signature Eau de Parfum to your cart to see the product details here.</p>
+      <button class="btn btn-gold" onclick="closeCart();document.getElementById('fragrance').scrollIntoView({behavior:'smooth'})">Shop AAN</button>
+    </div>
+
+    <div id="cartDetails" style="display:none">
+      <div class="cart-product">
+        <img src="images/aan-3.jpg" alt="AAN Signature Eau de Parfum">
+        <div>
+          <div class="kicker">AAN · Eau de Parfum</div>
+          <h3>Signature</h3>
+          <p class="cart-desc">Citrus, lavender, vanilla, musk & cedar.</p>
+          <div class="cart-row"><span>Price</span><strong>₹1,999</strong></div>
+          <div class="cart-row">
+            <span>Quantity</span>
+            <div class="qty-control">
+              <button onclick="changeQty(-1)">−</button>
+              <strong id="modalQty">1</strong>
+              <button onclick="changeQty(1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cart-total"><span>Total</span><strong id="modalTotal">₹1,999</strong></div>
+
+      <button class="btn btn-gold" style="width:100%" onclick="closeCart();document.getElementById('order').scrollIntoView({behavior:'smooth'})">
+        Proceed to Order
+      </button>
+      <button class="btn btn-light" style="width:100%;margin-top:10px" onclick="clearCart()">
+        Remove from Cart
+      </button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
