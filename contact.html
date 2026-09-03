@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AAN — Contact</title>
+<meta name="description" content="Contact AAN for fragrance orders, support and enquiries.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#18130f;--cream:#f8f4ec;--gold:#b58a3a;--muted:#71695f;--line:#e6ded1;--paper:#fffdf9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:Montserrat,Arial,sans-serif}
+a{text-decoration:none;color:inherit}
+button{font:inherit}
+.header{position:sticky;top:0;z-index:50;background:rgba(248,244,236,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;height:76px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:relative}
+.logo{display:flex;align-items:center;justify-content:center;width:58px;height:58px;overflow:hidden;border-radius:50%}
+.logo img{width:58px;height:58px;border-radius:50%;object-fit:cover;display:block}
+.navlinks{display:flex;gap:28px;font-size:13px;text-transform:uppercase;letter-spacing:1.5px}
+.navlinks a{position:relative;padding:8px 0}
+.navlinks a:after{content:"";position:absolute;left:0;bottom:1px;width:0;height:1px;background:var(--gold);transition:.25s}
+.navlinks a:hover:after,.navlinks a.active:after{width:100%}
+.cart{border:1px solid var(--ink);padding:10px 15px;border-radius:999px;cursor:pointer;background:transparent}
+.header-actions{display:flex;align-items:center;gap:10px}
+.burger-btn{display:none;width:44px;height:44px;border:1px solid var(--ink);background:transparent;border-radius:50%;padding:9px;cursor:pointer;flex-direction:column;justify-content:center;gap:5px}
+.burger-btn span{display:block;width:100%;height:2px;background:var(--ink);transition:.25s}
+.burger-btn.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger-btn.active span:nth-child(2){opacity:0}
+.burger-btn.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{display:none}
+
+.hero{max-width:1180px;margin:auto;padding:110px 24px 95px;display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.kicker{text-transform:uppercase;letter-spacing:4px;font-size:11px;color:var(--gold);font-weight:700}
+h1,h2,h3{font-family:"Cormorant Garamond",serif}
+h1{font-size:clamp(64px,8vw,105px);line-height:.84;margin:18px 0 22px;font-weight:600}
+.hero p{max-width:530px;color:var(--muted);font-size:15px;line-height:1.8}
+.contact-card{background:var(--paper);border:1px solid var(--line);padding:38px;box-shadow:0 20px 60px rgba(24,19,15,.07)}
+.card-label{text-transform:uppercase;letter-spacing:2px;font-size:9px;color:var(--muted);font-weight:700;margin-bottom:20px}
+.detail{display:flex;gap:18px;padding:20px 0;border-top:1px solid var(--line)}
+.detail:first-of-type{border-top:0;padding-top:0}
+.detail-icon{width:38px;height:38px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;flex:none;font-size:15px}
+.detail small{display:block;color:var(--muted);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.detail a,.detail span{font-size:15px;line-height:1.5}
+.detail a:hover{color:var(--gold)}
+.note{margin-top:28px;padding-top:22px;border-top:1px solid var(--line);font-size:11px;line-height:1.7;color:var(--muted)}
+.back{display:inline-block;margin-top:26px;border:1px solid var(--ink);padding:13px 20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px}
+.back:hover{background:var(--ink);color:#fff}
+footer{padding:38px 24px;text-align:center;border-top:1px solid var(--line);color:var(--muted);font-size:11px;letter-spacing:.4px}
+
+@media(max-width:800px){
+ .header{height:68px}.nav{height:68px;padding:0 14px}
+ .navlinks{display:none}.cart{padding:9px 12px;font-size:12px}
+ .burger-btn{display:flex;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+ .burger-btn.active{transform:translate(-50%,-50%)}
+ .mobile-menu{display:flex;position:absolute;left:0;right:0;top:68px;background:rgba(248,244,236,.98);backdrop-filter:blur(15px);border-bottom:1px solid var(--line);box-shadow:0 15px 30px rgba(0,0,0,.12);flex-direction:column;padding:8px 18px 18px;transform:translateY(-120%);opacity:0;pointer-events:none;transition:.25s}
+ .mobile-menu.open{transform:translateY(0);opacity:1;pointer-events:auto}
+ .mobile-menu a{padding:17px 8px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px}
+ .hero{grid-template-columns:1fr;gap:35px;padding:65px 18px 60px;text-align:center}
+ h1{font-size:clamp(58px,17vw,82px)}
+ .hero p{margin-left:auto;margin-right:auto;font-size:14px}
+ .contact-card{text-align:left;padding:26px 20px}
+ .detail a,.detail span{font-size:14px}
+}
+</style>
+</head>
+<body>
+<header class="header">
+<nav class="nav">
+<a class="logo" href="index.html" aria-label="AAN Home"><img src="images/aan-logo.jpg" alt="AAN"></a>
+<div class="navlinks">
+<a href="index.html#fragrance">Fragrance</a>
+<a href="index.html#story">The Story</a>
+<a href="index.html#order">Order</a>
+<a href="contact.html" class="active">Contact</a>
+<a href="admin.html">Admin</a>
+</div>
+<div class="header-actions">
+<button class="cart" type="button" onclick="window.location.href='index.html#order'">Order · ↗</button>
+<button class="burger-btn" id="burgerBtn" type="button" onclick="toggleMenu()" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+<a href="index.html#fragrance" onclick="closeMenu()">Fragrance</a>
+<a href="index.html#story" onclick="closeMenu()">The Story</a>
+<a href="index.html#order" onclick="closeMenu()">Order</a>
+<a href="contact.html" onclick="closeMenu()">Contact</a>
+<a href="admin.html" onclick="closeMenu()">Admin</a>
+</div>
+</header>
+
+<main>
+<section class="hero">
+<div>
+<div class="kicker">AAN / Contact</div>
+<h1>We'd love to hear from you.</h1>
+<p>For orders, product enquiries, customer support or any assistance, reach AAN through the details below.</p>
+<a class="back" href="index.html">Back to AAN</a>
+</div>
+
+<div class="contact-card">
+<div class="card-label">Contact Details</div>
+
+<div class="detail">
+<div class="detail-icon">☎</div>
+<div><small>Phone</small><a href="tel:+91971556372219">+91 97155 6372219</a></div>
+</div>
+
+<div class="detail">
+<div class="detail-icon">◎</div>
+<div><small>Website</small><a href="https://www.aansupport.in" target="_blank" rel="noopener">www.aansupport.in</a></div>
+</div>
+
+<div class="detail">
+<div class="detail-icon">✉</div>
+<div><small>Email</small><a href="mailto:info@aansupport.in">info@aansupport.in</a></div>
+</div>
+
+<div class="note">AAN — Wear Your Presence.<br>For customer support and enquiries, please include your order details whenever applicable.</div>
+</div>
+</section>
+</main>
+
+<footer>AAN · Luxury Fragrance · Customer Support</footer>
+
+<script>
+function toggleMenu(){
+ const menu=document.getElementById('mobileMenu'),btn=document.getElementById('burgerBtn');
+ const open=menu.classList.toggle('open');
+ btn.classList.toggle('active',open);
+ btn.setAttribute('aria-expanded',open?'true':'false');
+}
+function closeMenu(){
+ const menu=document.getElementById('mobileMenu'),btn=document.getElementById('burgerBtn');
+ menu.classList.remove('open');btn.classList.remove('active');btn.setAttribute('aria-expanded','false');
+}
+</script>
+</body>
+</html>

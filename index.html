@@ -658,6 +658,10 @@ footer{
   .aan-editorial-strip div:last-child{border-bottom:0}
 }
 
+
+/* Desktop navigation: Contact is always visible on laptop/desktop */
+.desktop-navlinks{display:flex !important;align-items:center;gap:28px;}
+@media(max-width:800px){.desktop-navlinks{display:none !important;}}
 </style>
 </head>
 <body>
@@ -671,6 +675,7 @@ footer{
     <a href="#fragrance">Fragrance</a>
     <a href="#story">The Story</a>
     <a href="#order">Order</a>
+    <a href="contact.html">Contact</a>
     <a href="admin.html">Admin</a>
   </div>
 
@@ -695,6 +700,8 @@ footer{
   <a href="#order" onclick="closeMenu()">Order</a>
   <a href="#history" onclick="closeMenu();showHistory()">Order History</a>
   <a href="admin.html" onclick="closeMenu()">Admin</a>
+
+<a href="contact.html" onclick="closeMenu()">Contact</a>
 </div>
 </header>
 
