@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AAN — Wear Your Presence</title>
 <meta name="description" content="AAN luxury fragrance — a refined signature scent.">
+<link rel="preload" as="image" href="images/hero-5.png" fetchpriority="high">
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#18130f;--cream:#f8f4ec;--gold:#b58a3a;--muted:#71695f;--line:#e6ded1}
@@ -65,7 +67,7 @@ h1,h2,h3{font-family:"Cormorant Garamond",serif}h1{font-size:clamp(58px,8vw,112p
 @media(max-width:800px){.story-copy{grid-template-columns:1fr}.logo,.logo img{width:52px;height:52px}}
 
 
-.hero-slider{position:relative;background:#eee;overflow:hidden}
+.hero-slider{position:relative;background:#f8f4ec;overflow:hidden}
 .hero-slides{position:absolute;inset:0}
 .hero-slide{position:absolute!important;inset:0;width:100%!important;height:100%!important;object-fit:cover;opacity:0;visibility:hidden;transition:opacity .45s ease;object-position:center}
 .hero-slide.active{opacity:1;visibility:visible}
@@ -712,11 +714,11 @@ footer{
 <a class="btn btn-gold" href="#order">Shop AAN — ₹1,999</a></div>
 <div class="hero-img hero-slider" aria-label="AAN fragrance gallery">
   <div class="hero-slides">
-    <img class="hero-slide hero-vertical active" src="images/hero-5.png" alt="AAN perfume campaign">
-    <img class="hero-slide" src="images/hero-1.jpg" alt="AAN perfume with citrus and floral notes">
-    <img class="hero-slide" src="images/hero-2.jpg" alt="AAN perfume with creamy vanilla notes">
-    <img class="hero-slide" src="images/hero-3.jpg" alt="AAN perfume in a luxury city campaign">
-    <img class="hero-slide" src="images/hero-4.jpg" alt="AAN perfume presented on a luxury tray">
+    <img class="hero-slide hero-vertical active" src="images/hero-5.png" alt="AAN perfume campaign" fetchpriority="high" decoding="async">
+    <img class="hero-slide" src="images/hero-1.jpg" loading="lazy" decoding="async" fetchpriority="low" alt="AAN perfume with citrus and floral notes">
+    <img class="hero-slide" src="images/hero-2.jpg" loading="lazy" decoding="async" fetchpriority="low" alt="AAN perfume with creamy vanilla notes">
+    <img class="hero-slide" src="images/hero-3.jpg" loading="lazy" decoding="async" fetchpriority="low" alt="AAN perfume in a luxury city campaign">
+    <img class="hero-slide" src="images/hero-4.jpg" loading="lazy" decoding="async" fetchpriority="low" alt="AAN perfume presented on a luxury tray">
   </div>
   <button class="hero-arrow hero-prev" type="button" onclick="changeHero(-1)" aria-label="Previous image">‹</button>
   <button class="hero-arrow hero-next" type="button" onclick="changeHero(1)" aria-label="Next image">›</button>
