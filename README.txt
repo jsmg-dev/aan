@@ -1,16 +1,12 @@
-AAN PERFUME WEBSITE — ORDER WHATSAPP UPDATE
+AAN Advanced Website
 
-Confirm Order now opens WhatsApp and sends the complete order details to:
-+91 91660 10400
+Files:
+- index.html
+- styles.css
 
-Details sent:
-- Product
-- Size
-- Quantity
-- Total
-- Customer name
-- Customer phone
-- Customer email
-- Delivery address
-
-Note: The customer must have WhatsApp available for the WhatsApp handoff to work.
+Important:
+1. Keep styles.css in the SAME folder as index.html.
+2. Keep the existing images/ folder in the same project structure.
+3. All existing JavaScript/order/cart/history functionality is preserved.
+4. Google Apps Script endpoint remains configurable in index.html.
+5. This update separates the CSS and adds a more premium, responsive luxury design system.
